@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: oms
+    database: makestar-dw
+    schema: pg_oms_public
+    description: "주문관리시스템(Order Management System) 운영 DB"
+    tables:
+      - name: mst_sku
+        description: "SKU 마스터 (직발주 변형 중복 주의)"
+      - name: mst_sku_category
+        description: "SKU 카테고리"

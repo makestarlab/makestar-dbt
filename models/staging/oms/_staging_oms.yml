@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_oms__skus
+    description: "pg_oms_public.mst_sku | grain: 원천과 동일"
+  - name: stg_oms__sku_categories
+    description: "pg_oms_public.mst_sku_category | grain: 원천과 동일"

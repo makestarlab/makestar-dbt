@@ -1,0 +1,30 @@
+version: 2
+
+metrics:
+  - name: gmv
+    label: "총 거래액"
+    type: simple
+    type_params: {measure: total_revenue}
+
+  - name: order_count
+    label: "주문 건수"
+    type: simple
+    type_params: {measure: order_count}
+
+  - name: buyer_count
+    label: "구매자 수"
+    type: simple
+    type_params: {measure: buyer_count}
+
+  - name: aov
+    label: "객단가"
+    type: ratio
+    type_params:
+      numerator: gmv
+      denominator: order_count
+
+  - name: gmv_b2c
+    label: "B2C 총 거래액"
+    type: simple
+    type_params: {measure: total_revenue}
+    filter: "{{ Dimension('order__market_type') }} = 'B2C'"

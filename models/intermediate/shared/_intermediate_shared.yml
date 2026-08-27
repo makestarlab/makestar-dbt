@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_exchange_rates_unioned
+    description: "vw_commerce_exchange_rate + external.country_exchange_rate_googlefinance | grain: 일자 × 통화"

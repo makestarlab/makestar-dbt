@@ -1,0 +1,7 @@
+version: 2
+
+groups:
+  - name: shared
+    owner: {name: "데이터팀"}
+  - name: commerce
+    owner: {name: "데이터팀"}

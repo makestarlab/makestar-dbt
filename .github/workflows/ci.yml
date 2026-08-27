@@ -1,0 +1,42 @@
+name: dbt 지속적 통합
+
+on:
+  pull_request:
+    paths: ['models/**', 'macros/**', 'tests/**', 'seeds/**', 'dbt_project.yml']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: pip install "dbt-bigquery>=1.9"
+
+      - name: Write keyfile
+        run: echo '${{ secrets.DBT_BIGQUERY_KEYFILE }}' > /tmp/key.json
+
+      - name: Write profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'EOF'
+          makestar:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: service-account
+                keyfile: /tmp/key.json
+                project: makestar-dw
+                dataset: dbt_ci_pr_${{ github.event.number }}
+                location: asia-northeast3
+                threads: 8
+          EOF
+
+      - run: dbt deps
+      - run: dbt parse
+      - run: dbt build --fail-fast

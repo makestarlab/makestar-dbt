@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: manual
+    database: makestar-dw
+    schema: datamart
+    description: "수기 입력 / 비즈 운영 매핑 테이블. 외부에서 갱신되므로 seed가 아닌 source"
+    tables:
+      - name: order_biz_mapper_objects
+        description: "🔴 분류 오버라이드 (OR 조인 위험)"
+      - name: order_biz_mapper_users
+        description: "유저 단위 분류 오버라이드"
+      - name: archived_orders
+        description: "과거 주문 스냅샷"
+      - name: albumbuddy_internal
+        description: "앨범버디 내부 계정 제외 목록"
+      - name: offline_orders_makestarshop_
+        description: "오프라인 - 메이크스타샵"
+      - name: offline_orders_space_china_
+        description: "오프라인 - 스페이스 상하이"
+      - name: offline_orders_space_guangzhou_
+        description: "오프라인 - 스페이스 광저우"
+      - name: offline_orders_space_shenzhen_
+        description: "오프라인 - 스페이스 선전"
+      - name: offline_orders_space_tokyo_
+        description: "오프라인 - 스페이스 도쿄"
+      - name: offline_orders_japan_
+        description: "오프라인 - 일본 (타워레코드/누에라)"
+      - name: offline_orders_china_
+        description: "오프라인 - 중국"
+      - name: offline_orders_taiwan_
+        description: "오프라인 - 대만"
+      - name: offline_orders_northamerica_europe_
+        description: "오프라인 - 미주유럽"
+      - name: event_extra_orders_
+        description: "팬클럽 자체 링크"
+      - name: pocaalbum_orders_
+        description: "포카앨범 제작"
+      - name: album_extra_orders_
+        description: "앨범 유통/도매"
+      - name: extra_orders_
+        description: "B2C 기타"

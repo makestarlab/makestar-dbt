@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>makestar-dbt · total_orders 재구성 구조도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --shelf:#F4F6F8; --ink:#15181E; --graphite:#656E7B;
+  --rule:#DDE2E8; --signal:#1B4D6B; --alarm:#B03428; --watch:#8A6212;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+/* ── header ─────────────────────────────────────────── */
+header.top{border-bottom:1px solid var(--ink);padding:52px 0 26px;margin-bottom:0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--signal);font-weight:600;margin:0 0 14px}
+h1{font-family:var(--mono);font-size:clamp(28px,4.4vw,46px);font-weight:700;letter-spacing:-.03em;
+  margin:0 0 16px;line-height:1.08}
+h1 em{font-style:normal;color:var(--graphite);font-weight:400}
+.lede{max-width:62ch;color:var(--graphite);margin:0 0 28px;font-size:15.5px}
+.counts{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule)}
+.count{flex:1 1 140px;padding:16px 20px 14px;border-right:1px solid var(--rule)}
+.count:last-child{border-right:0}
+.count b{display:block;font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.count span{display:block;font-size:12px;color:var(--graphite);margin-top:6px;letter-spacing:.02em}
+
+/* ── controls ───────────────────────────────────────── */
+.controls{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:12px 0}
+.controls .wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:12px;font-weight:500;padding:7px 13px;border:1px solid var(--rule);
+  background:var(--paper);color:var(--graphite);border-radius:2px;cursor:pointer;transition:.14s}
+.btn:hover{border-color:var(--ink);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.hint{font-size:12px;color:var(--graphite);margin-left:auto}
+
+/* ── stage ──────────────────────────────────────────── */
+.stage{display:grid;grid-template-columns:64px 1fr;border-bottom:1px solid var(--rule)}
+.stage:last-of-type{border-bottom:1px solid var(--ink)}
+.rail{position:relative;border-right:1px solid var(--rule);background:var(--shelf)}
+.rail::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule)}
+.depth{position:sticky;top:64px;display:block;width:30px;height:30px;margin:26px auto 0;
+  background:var(--paper);border:1px solid var(--ink);border-radius:50%;
+  font-family:var(--mono);font-weight:600;font-size:13px;line-height:28px;text-align:center;z-index:2}
+.stage-body{padding:26px 0 30px 26px;min-width:0}
+.stage-head h2{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 7px}
+.legacy{font-family:var(--mono);font-size:12.5px;color:var(--signal);margin:0 0 4px;word-break:break-word}
+.detail{font-size:12.5px;color:var(--graphite);margin:0}
+.stage-note{font-size:13.5px;color:var(--graphite);margin:14px 0 18px;padding-left:13px;
+  border-left:2px solid var(--rule);max-width:74ch}
+
+/* ── model grid ─────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule)}
+.card{background:var(--paper);padding:11px 13px;min-width:0;position:relative}
+.card.hide{display:none}
+.card .nm{font-family:var(--mono);font-size:12.5px;font-weight:500;word-break:break-all;
+  border:1px solid transparent;border-radius:2px;padding:1px 3px;margin:-1px -3px;display:inline-block;
+  max-width:100%}
+.card .nm[contenteditable]{cursor:text}
+.card .nm:focus{outline:none;border-color:var(--signal);background:#F0F6FA}
+.card .nm.edited{background:#FFF6DC;border-color:var(--watch)}
+.card .meta{font-size:11px;color:var(--graphite);margin-top:5px;line-height:1.45}
+.card .alt{font-family:var(--mono);font-size:10.5px;color:var(--graphite);margin-top:5px;opacity:.85}
+.card .alt b{font-weight:500;color:var(--signal)}
+.card.r1{box-shadow:inset 3px 0 0 var(--watch)}
+.card.r2{box-shadow:inset 3px 0 0 var(--alarm)}
+.flag{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.07em;
+  padding:1px 5px;border-radius:2px;margin-top:6px}
+.r1 .flag{background:#FCF3DC;color:var(--watch)}
+.r2 .flag{background:#FBEAE7;color:var(--alarm)}
+
+/* ── risks ──────────────────────────────────────────── */
+.section-head{padding:44px 0 20px}
+.section-head h2{font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.02em;margin:0 0 8px}
+.section-head p{color:var(--graphite);margin:0;max-width:66ch;font-size:14px}
+.risks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-bottom:12px}
+.risk{background:var(--paper);padding:20px 20px 22px}
+.risk-key{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.13em;margin-bottom:10px}
+.r2 .risk-key{color:var(--alarm)} .r1 .risk-key{color:var(--watch)}
+.risk h3{font-size:15.5px;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
+.risk-model{font-family:var(--mono);font-size:11.5px;color:var(--signal);margin:0 0 11px}
+.risk p{font-size:13.5px;color:var(--graphite);margin:0 0 11px}
+.risk code{font-family:var(--mono);font-size:11.5px;background:var(--shelf);padding:1px 4px;
+  border-radius:2px;color:var(--ink);word-break:break-word}
+.risk-fix{border-top:1px solid var(--rule);padding-top:11px;margin:0;color:var(--ink) !important;font-size:13px}
+.risk-fix span{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;
+  color:var(--signal);margin-right:7px}
+
+/* ── output ─────────────────────────────────────────── */
+.out{border:1px solid var(--ink);margin-bottom:56px}
+.out-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--rule);
+  flex-wrap:wrap}
+.out-head h3{font-family:var(--mono);font-size:13px;font-weight:600;margin:0}
+.out-head .n{font-family:var(--mono);font-size:11px;color:var(--graphite);margin-right:auto}
+pre{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.75;
+  background:var(--shelf);overflow-x:auto;color:var(--ink);min-height:76px;white-space:pre-wrap}
+pre .c{color:var(--graphite)}
+footer{border-top:1px solid var(--rule);padding:22px 0 46px;font-size:12px;color:var(--graphite)}
+footer code{font-family:var(--mono);background:var(--shelf);padding:1px 5px;border-radius:2px}
+
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .stage{grid-template-columns:40px 1fr}
+  .stage-body{padding-left:16px}
+  .depth{width:24px;height:24px;line-height:22px;font-size:11px;margin-top:24px}
+  .grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+@media print{
+  .controls{display:none} body{font-size:11pt}
+  .stage{break-inside:avoid} .risk{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">makestar-dbt · 리니지 실측 기반 스캐폴드</p>
+    <h1>datamart.total_orders<br><em>를 dbt 52개 모델로 펼치기</em></h1>
+    <p class="lede">BigQuery 잡 히스토리와 뷰 정의를 직접 뜯어 6단 파이프라인을 복원했습니다.
+      왼쪽 숫자는 레거시 파이프라인의 깊이이고, 각 단에 그 단을 대체하는 dbt 모델이 붙습니다.
+      모델 이름은 전부 제안이니 카드 위에서 직접 고쳐 쓰세요.</p>
+    <div class="counts">
+      <div class="count"><b>6</b><span>레거시 파이프라인 단계</span></div>
+      <div class="count"><b>47</b><span>원천 테이블</span></div>
+      <div class="count"><b>52</b><span>dbt 모델</span></div>
+      <div class="count"><b>4</b><span>확인된 위험 지점</span></div>
+      <div class="count"><b>2,009,300</b><span>total_orders 행 수</span></div>
+    </div>
+  </header>
+</div>
+
+<div class="controls">
+  <div class="wrap">
+    <button class="btn" id="f-all" aria-pressed="true">전체 52</button>
+    <button class="btn" id="f-risk" aria-pressed="false">위험만 6</button>
+    <button class="btn" id="f-stg" aria-pressed="false">staging 30</button>
+    <button class="btn" id="f-int" aria-pressed="false">intermediate 18</button>
+    <button class="btn" id="f-mart" aria-pressed="false">marts 4</button>
+    <span class="hint">모델 이름을 클릭하면 바로 고칠 수 있습니다</span>
+  </div>
+</div>
+
+<div class="wrap">
+  
+    <section class="stage" data-stage="0">
+      <div class="rail"><span class="depth">0</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>원천</h2>
+          <p class="legacy">운영 DB · 외부 채널 · 수기 입력</p>
+          <p class="detail">pg_mystarroom_public 16 · pg_oms_public 2 · production 3 · external 5 · albumbuddy 2 · datamart 수기 19</p>
+        </header>
+        <p class="stage-note">tb_commerce_order 의 JSONB 는 2.5분 주기 MERGE 로 이미 flatten 되어 있다. 이 파이프라인은 dbt 밖에 둔다.</p>
+        <div class="grid" data-grid="0"></div>
+      </div>
+    </section>
+    <section class="stage" data-stage="1">
+      <div class="rail"><span class="depth">1</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>정제</h2>
+          <p class="legacy">datamart.tb_commerce_orders_flattened</p>
+          <p class="detail">insert-only MERGE · 30일간 17,286회 실행</p>
+        </header>
+        <p class="stage-note">staging 에서 컬럼 리네임과 타입 캐스팅만 한다. 조인 금지.</p>
+        <div class="grid" data-grid="1"></div>
+      </div>
+    </section>
+    <section class="stage" data-stage="2">
+      <div class="rail"><span class="depth">2</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>보강</h2>
+          <p class="legacy">vw_commerce_orders · vw_commerce_order_items · vw_commerce_items_v2 · vw_product_option_info · vw_commerce_exchange_rate</p>
+          <p class="detail">뷰 5개 체인</p>
+        </header>
+        <p class="stage-note">vw_commerce_items_v2 가 order_biz_mapper_objects 를 참조한다. 카탈로그가 매출 분류 매퍼에 의존하는 순환 구조 — 재구축 때 끊는다.</p>
+        <div class="grid" data-grid="2"></div>
+      </div>
+    </section>
+    <section class="stage" data-stage="3">
+      <div class="rail"><span class="depth">3</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>커머스 통합</h2>
+          <p class="legacy">datamart.pre_commerce_orders</p>
+          <p class="detail">리워드 · 쇼핑 · 차액지불 3개 UNION ALL</p>
+        </header>
+        <p class="stage-note">쇼핑 브랜치가 event_id 를 string_agg 로 결합한다. M:N 을 컬럼에 욱여넣은 것.</p>
+        <div class="grid" data-grid="3"></div>
+      </div>
+    </section>
+    <section class="stage" data-stage="4">
+      <div class="rail"><span class="depth">4</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>전 채널 통합 + 분류</h2>
+          <p class="legacy">datamart.pre_total_orders</p>
+          <p class="detail">commerce + 웨이디엔 + 오프라인 9개 매장 + 앨범버디 + 수기 3종 + archived → CASE 트리 → 오버라이드 2단</p>
+        </header>
+        <p class="stage-note">원본 쿼리 약 700줄 중 400줄이 오프라인 매장 9개 복붙이다. staging 에서 한 번에 정규화하면 사라진다.</p>
+        <div class="grid" data-grid="4"></div>
+      </div>
+    </section>
+    <section class="stage" data-stage="5">
+      <div class="rail"><span class="depth">5</span></div>
+      <div class="stage-body">
+        <header class="stage-head">
+          <h2>마트</h2>
+          <p class="legacy">datamart.total_orders</p>
+          <p class="detail">WHERE market_type != &#x27;제외&#x27; · 2,009,300행 · 708MB</p>
+        </header>
+        <p class="stage-note">Phase 1 에서는 이 테이블을 source 로 감싼다. 지표 정의를 먼저 고정하기 위해서.</p>
+        <div class="grid" data-grid="5"></div>
+      </div>
+    </section>
+
+  <div class="section-head">
+    <h2>확인된 위험 지점</h2>
+    <p>추정이 아니라 레거시 SQL 에서 실제로 확인한 것들입니다. 앞의 두 개는 매출 숫자를
+      조용히 틀리게 만들고 있고, dbt 이식 순서에서 가장 먼저 격리해야 합니다.</p>
+  </div>
+  <div class="risks">
+    <article class="risk r2">
+      <div class="risk-key">CRITICAL</div>
+      <h3>매퍼 조인이 OR 3개</h3>
+      <p class="risk-model">int_orders_overridden</p>
+      <p>레거시는 order_biz_mapper_objects 를 <code>t.event_id = b.event_id OR t.product_code = b.product_code OR t.order_no = b.order_no</code> 로 조인한다. 한 주문이 두 규칙에 동시에 매칭되면 행이 복제되고 매출이 조용히 늘어난다.</p>
+      <p class="risk-fix"><span>대응</span> match_key 로 우선순위를 정해 1:1 을 강제하고, int_orders_classified 와 equal_rowcount 로 대조한다.</p>
+    </article>
+    <article class="risk r2">
+      <div class="risk-key">CRITICAL</div>
+      <h3>앨범수량 2.69배 과다집계의 발원지</h3>
+      <p class="risk-model">int_catalog_option_sales</p>
+      <p><code>order_qty * sum(sales_qty)</code> 한 줄. sum() 이 &quot;N종 중 M매 랜덤 증정&quot; 풀 전체를 더한다.</p>
+      <p class="risk-fix"><span>대응</span> 풀 구성은 보존하고 배분은 int_album_unit_allocation 이 담당. 확정 전까지 album_units 를 지표로 노출하지 않는다.</p>
+    </article>
+    <article class="risk r1">
+      <div class="risk-key">WATCH</div>
+      <h3>event_id 가 SKU명 문자열 파싱</h3>
+      <p class="risk-model">int_catalog_event_resolution</p>
+      <p>sku_name_component_1 이 production.project.id 또는 product_event_data.code 에 있으면 event_id 로 간주한다. 문자열 휴리스틱은 에러 없이 조용히 틀린다.</p>
+      <p class="risk-fix"><span>대응</span> 미매칭 커버리지 테스트로 실패를 시끄럽게 만들고, 중기적으로 실제 매핑 테이블로 교체한다.</p>
+    </article>
+    <article class="risk r1">
+      <div class="risk-key">WATCH</div>
+      <h3>KST 가 하드코딩</h3>
+      <p class="risk-model">전역</p>
+      <p><code>datetime_add(col, interval 9 hour)</code> 가 파이프라인 전반에 박혀 있다. 시간 단위 분석을 도입하면 타임존이 섞인 채로 집계된다.</p>
+      <p class="risk-fix"><span>대응</span> to_kst() 매크로로 한 곳에 모은다. 시간 단위 time spine 도입 전에 정책을 확정한다.</p>
+    </article></div>
+
+  <div class="section-head">
+    <h2>rename.yml 생성</h2>
+    <p>위에서 고친 이름이 여기에 모입니다. 복사해서 레포의 <code>rename.yml</code> 에 붙여넣고
+      <code>python rename.py</code> 를 실행하면 파일명 · ref() · yml 이 한 번에 바뀝니다.</p>
+  </div>
+  <div class="out">
+    <div class="out-head">
+      <h3>rename.yml</h3>
+      <span class="n" id="cnt">변경 0건</span>
+      <button class="btn" id="copy">복사</button>
+      <button class="btn" id="reset">되돌리기</button>
+    </div>
+    <pre id="yaml"><span class="c"># 모델 이름을 고치면 여기에 나타납니다.</span></pre>
+  </div>
+
+  <footer>
+    <code>dbt parse</code> → <code>dbt ls</code> → <code>dbt build -s tag:staging</code> 순으로 확인하세요.
+    Phase 1 에서 <code>fct_orders</code> 는 레거시 <code>total_orders</code> 를 감싸는 래퍼입니다.
+    지표 정의를 먼저 고정한 뒤 <code>from</code> 절만 교체하는 것이 전환 전략입니다.
+  </footer>
+</div>
+
+<script>
+const MODELS = [{"folder": "staging/mystarroom", "name": "stg_mystarroom__orders", "legacy": "datamart.tb_commerce_orders_flattened → vw_commerce_orders", "grain": "주문 1건", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__order_items", "legacy": "vw_commerce_order_items", "grain": "주문 × 아이템", "risk": "⚠️ UNNEST — grain 변경", "stage": 1, "alt": "", "lvl": 1, "risktext": "UNNEST — grain 변경"}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__additional_orders", "legacy": "pg_mystarroom_public.tb_commerce_additional_order", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__products", "legacy": "pg_mystarroom_public.tb_commerce_product", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__product_options", "legacy": "pg_mystarroom_public.tb_commerce_product_option", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__product_contents", "legacy": "pg_mystarroom_public.tb_commerce_product_content", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__product_event_data", "legacy": "pg_mystarroom_public.tb_commerce_product_event_data", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__product_event_sales", "legacy": "pg_mystarroom_public.tb_commerce_product_event_sales_data", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__artists", "legacy": "pg_mystarroom_public.tb_artist_artist", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__artist_companies", "legacy": "pg_mystarroom_public.tb_artist_company", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__categories", "legacy": "pg_mystarroom_public.tb_common_category", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__users", "legacy": "pg_mystarroom_public.tb_auth_user", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__user_groups", "legacy": "pg_mystarroom_public.tb_auth_user_user_group", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/mystarroom", "name": "stg_mystarroom__exchange_rates", "legacy": "pg_mystarroom_public.tb_commerce_exchange_rate", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/oms", "name": "stg_oms__skus", "legacy": "pg_oms_public.mst_sku", "grain": "원천과 동일", "risk": "⚠️ mst_sku 직발주 변형 SKU 중복", "stage": 1, "alt": "", "lvl": 1, "risktext": "mst_sku 직발주 변형 SKU 중복"}, {"folder": "staging/oms", "name": "stg_oms__sku_categories", "legacy": "pg_oms_public.mst_sku_category", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/production", "name": "stg_production__projects", "legacy": "production.project", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/production", "name": "stg_production__exchange_history", "legacy": "production.country_exchange_history", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/production", "name": "stg_production__country_codes", "legacy": "production.SPM_COUNTRY_CODE", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/weidian", "name": "stg_weidian__orders", "legacy": "external.WEIDIAN_ORDER_HIS", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/weidian", "name": "stg_weidian__order_items", "legacy": "external.WEIDIAN_ORDER_ITEM_HIS", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/weidian", "name": "stg_weidian__items", "legacy": "external.WEIDIAN_ITEM", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/albumbuddy", "name": "stg_albumbuddy__orders", "legacy": "public.order", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/albumbuddy", "name": "stg_albumbuddy__package_deliveries", "legacy": "public.package_delivery", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/albumbuddy", "name": "stg_albumbuddy__pob_outbound", "legacy": "external.albumbuddy_pob_only", "grain": "원천과 동일", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/manual", "name": "stg_manual__offline_orders", "legacy": "pre_total_orders 의 offline CTE (9개 매장 UNION)", "grain": "매장 × 주문일 × 상품", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/manual", "name": "stg_manual__extra_orders", "legacy": "event_extra_orders_ / pocaalbum_orders_ / album_extra_orders_ / extra_orders_", "grain": "채널 × 주문일 × 상품", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/manual", "name": "stg_manual__biz_mapper_objects", "legacy": "datamart.order_biz_mapper_objects", "grain": "매퍼 규칙 1건", "risk": "🔴 OR 조인의 원인", "stage": 1, "alt": "", "lvl": 2, "risktext": "OR 조인의 원인"}, {"folder": "staging/manual", "name": "stg_manual__biz_mapper_users", "legacy": "datamart.order_biz_mapper_users", "grain": "유저 × 분류 1건", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "staging/manual", "name": "stg_manual__archived_orders", "legacy": "datamart.archived_orders", "grain": "과거 주문 1건", "risk": "", "stage": 1, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/catalog", "name": "int_catalog_items", "legacy": "datamart.vw_commerce_items_v2", "grain": "상품 × 옵션 × SKU", "risk": "🔴 mapper 의존성 제거 대상", "stage": 2, "alt": "int_product_sku_lookup", "lvl": 2, "risktext": "mapper 의존성 제거 대상"}, {"folder": "intermediate/catalog", "name": "int_catalog_option_sales", "legacy": "datamart.vw_product_option_info", "grain": "이벤트 × 옵션", "risk": "🔴 2.69배 과다집계 발원지", "stage": 2, "alt": "int_pool_composition", "lvl": 2, "risktext": "2.69배 과다집계 발원지"}, {"folder": "intermediate/catalog", "name": "int_catalog_event_resolution", "legacy": "pre_commerce_orders 쇼핑 브랜치의 sku_name_component_1 매칭", "grain": "이벤트 × 옵션", "risk": "⚠️ SKU명 파싱 휴리스틱", "stage": 2, "alt": "", "lvl": 1, "risktext": "SKU명 파싱 휴리스틱"}, {"folder": "intermediate/shared", "name": "int_exchange_rates_unioned", "legacy": "vw_commerce_exchange_rate + external.country_exchange_rate_googlefinance", "grain": "일자 × 통화", "risk": "", "stage": 2, "alt": "int_fx_rates", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_enriched", "legacy": "datamart.vw_commerce_orders", "grain": "주문 1건", "risk": "", "stage": 2, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_order_items_enriched", "legacy": "datamart.vw_commerce_order_items", "grain": "주문 × 아이템", "risk": "", "stage": 2, "alt": "int_order_lines", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_reward", "legacy": "pre_commerce_orders 1번 UNION (이벤트/펀딩)", "grain": "주문 × 옵션", "risk": "", "stage": 3, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_shopping", "legacy": "pre_commerce_orders 2번 UNION (쇼핑)", "grain": "주문 × 옵션", "risk": "⚠️ string_agg(event_id) 제거", "stage": 3, "alt": "", "lvl": 1, "risktext": "string_agg(event_id) 제거"}, {"folder": "intermediate/orders", "name": "int_orders_etc", "legacy": "pre_commerce_orders 3번 UNION (차액지불)", "grain": "주문 × 옵션", "risk": "", "stage": 3, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_commerce", "legacy": "datamart.pre_commerce_orders", "grain": "주문 × 옵션", "risk": "", "stage": 3, "alt": "int_orders_web", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_weidian", "legacy": "pre_total_orders 의 external CTE", "grain": "웨이디엔 주문 × 옵션", "risk": "", "stage": 4, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_offline", "legacy": "pre_total_orders 의 offline CTE (매장)", "grain": "매장 주문", "risk": "", "stage": 4, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_albumbuddy", "legacy": "pre_total_orders 의 albumbuddy 블록", "grain": "앨범버디 주문", "risk": "", "stage": 4, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_manual_etc", "legacy": "pre_total_orders 의 etc CTE", "grain": "수기 주문", "risk": "", "stage": 4, "alt": "int_orders_ops", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_unioned", "legacy": "pre_total_orders 의 최종 UNION ALL", "grain": "전 채널 주문 × 옵션", "risk": "", "stage": 4, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "intermediate/orders", "name": "int_orders_classified", "legacy": "pre_total_orders 의 market_type/biz_type/channel_type CASE 트리", "grain": "전 채널 주문 × 옵션 (행 수 불변)", "risk": "🔴 최고 위험 - 분류 로직", "stage": 4, "alt": "int_orders_segmented / int_orders_typed", "lvl": 2, "risktext": "최고 위험 - 분류 로직"}, {"folder": "intermediate/orders", "name": "int_orders_overridden", "legacy": "pre_total_orders 의 order_biz_mapper 조인 2단", "grain": "전 채널 주문 × 옵션 (행 수 불변이어야 함)", "risk": "🔴 OR 조인 - 행 복제 위험", "stage": 4, "alt": "int_orders_mapped / int_orders_adjusted", "lvl": 2, "risktext": "OR 조인 - 행 복제 위험"}, {"folder": "intermediate/orders", "name": "int_album_unit_allocation", "legacy": "order_album_qty = order_qty * sum(sales_qty) 대체", "grain": "주문 × 옵션 × parent_sku", "risk": "🔴 2.69배 문제 해결 지점", "stage": 4, "alt": "int_album_qty_allocated", "lvl": 2, "risktext": "2.69배 문제 해결 지점"}, {"folder": "marts/orders", "name": "fct_orders", "legacy": "datamart.total_orders", "grain": "주문 × 옵션 1건", "risk": "", "stage": 5, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "marts/orders", "name": "bridge_order_event", "legacy": "pre_commerce_orders 의 string_agg(event_id, ', ')", "grain": "주문 × 옵션 × event_id", "risk": "", "stage": 5, "alt": "bridge_order_offer", "lvl": 0, "risktext": ""}, {"folder": "marts/shared", "name": "time_spine_daily", "legacy": "-", "grain": "1일 1행", "risk": "", "stage": 6, "alt": "", "lvl": 0, "risktext": ""}, {"folder": "marts/shared", "name": "time_spine_hourly", "legacy": "-", "grain": "1시간 1행", "risk": "", "stage": 6, "alt": "", "lvl": 0, "risktext": ""}];
+const edits = new Map();
+
+function card(m){
+  const el = document.createElement('div');
+  el.className = 'card' + (m.lvl ? ' r'+m.lvl : '');
+  el.dataset.name = m.name;
+  el.dataset.folder = m.folder;
+  el.dataset.lvl = m.lvl;
+
+  const nm = document.createElement('span');
+  nm.className = 'nm';
+  nm.contentEditable = 'true';
+  nm.spellcheck = false;
+  nm.textContent = m.name;
+  nm.addEventListener('input', () => {
+    const v = nm.textContent.trim();
+    if (v && v !== m.name) { edits.set(m.name, v); nm.classList.add('edited'); }
+    else { edits.delete(m.name); nm.classList.remove('edited'); }
+    render();
+  });
+  nm.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.blur(); } });
+  el.appendChild(nm);
+
+  const meta = document.createElement('p');
+  meta.className = 'meta';
+  meta.textContent = m.legacy + ' · grain: ' + m.grain;
+  el.appendChild(meta);
+
+  if (m.alt) {
+    const a = document.createElement('p');
+    a.className = 'alt';
+    a.innerHTML = '<b>대안</b> ' + m.alt;
+    el.appendChild(a);
+  }
+  if (m.lvl) {
+    const f = document.createElement('span');
+    f.className = 'flag';
+    f.textContent = m.risktext || (m.lvl === 2 ? '위험' : '주의');
+    el.appendChild(f);
+  }
+  return el;
+}
+
+const STAGE_OF = m => m.stage > 5 ? 5 : m.stage;
+MODELS.forEach(m => {
+  const g = document.querySelector('[data-grid="' + STAGE_OF(m) + '"]');
+  if (g) g.appendChild(card(m));
+});
+
+// filters
+const FILTERS = {
+  'f-all':  () => true,
+  'f-risk': c => c.dataset.lvl !== '0',
+  'f-stg':  c => c.dataset.folder.startsWith('staging'),
+  'f-int':  c => c.dataset.folder.startsWith('intermediate'),
+  'f-mart': c => c.dataset.folder.startsWith('marts'),
+};
+const btns = Object.keys(FILTERS).map(id => document.getElementById(id));
+btns.forEach(b => b.addEventListener('click', () => {
+  btns.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  const test = FILTERS[b.id];
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('hide', !test(c)));
+  document.querySelectorAll('.stage').forEach(s => {
+    const any = [...s.querySelectorAll('.card')].some(c => !c.classList.contains('hide'));
+    s.style.display = (any || b.id === 'f-all') ? '' : 'none';
+  });
+}));
+
+// yaml output
+function render(){
+  const pre = document.getElementById('yaml');
+  document.getElementById('cnt').textContent = '변경 ' + edits.size + '건';
+  if (!edits.size) {
+    pre.innerHTML = '<span class="c"># 모델 이름을 고치면 여기에 나타납니다.</span>';
+    return;
+  }
+  const pad = Math.max(...[...edits.keys()].map(k => k.length));
+  let out = 'renames:\n';
+  for (const [o, n] of edits) out += '  ' + o.padEnd(pad) + ': ' + n + '\n';
+  pre.textContent = out;
+}
+
+document.getElementById('copy').addEventListener('click', async e => {
+  const t = document.getElementById('yaml').textContent;
+  try { await navigator.clipboard.writeText(t); e.target.textContent = '복사됨'; }
+  catch { e.target.textContent = '복사 실패'; }
+  setTimeout(() => e.target.textContent = '복사', 1400);
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  edits.clear();
+  document.querySelectorAll('.nm').forEach(n => {
+    n.textContent = n.closest('.card').dataset.name;
+    n.classList.remove('edited');
+  });
+  render();
+});
+</script>
+</body>
+</html>

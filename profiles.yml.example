@@ -1,0 +1,22 @@
+# ~/.dbt/profiles.yml 로 복사한 뒤 사용하세요. 레포에 커밋하지 마세요.
+makestar:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth              # gcloud auth application-default login
+      project: makestar-dw
+      dataset: dbt_kch           # 예: dbt_kch
+      location: asia-northeast3
+      threads: 8
+      priority: interactive
+      job_execution_timeout_seconds: 1200
+
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: /path/to/key.json
+      project: makestar-dw
+      dataset: da
+      location: asia-northeast3
+      threads: 16

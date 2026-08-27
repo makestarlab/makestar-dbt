@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: production
+    database: makestar-dw
+    schema: production
+    description: "레거시 프로덕션 DB"
+    tables:
+      - name: project
+        description: "구 프로젝트(이벤트) 마스터"
+      - name: country_exchange_history
+        description: "국가별 환율 이력"
+      - name: SPM_COUNTRY_CODE
+        description: "국가 코드"

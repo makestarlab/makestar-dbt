@@ -1,0 +1,54 @@
+name: 'makestar_dbt'
+version: '1.0.0'
+config-version: 2
+profile: 'makestar'
+require-dbt-version: [">=1.9.0", "<2.0.0"]
+
+model-paths:   ["models"]
+macro-paths:   ["macros"]
+test-paths:    ["tests"]
+seed-paths:    ["seeds"]
+
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # 전사 기준 시간대. 레거시의 interval 9 hour 하드코딩을 대체한다.
+  timezone: 'Asia/Seoul'
+  # Phase 1 = 레거시 래퍼, Phase 2 = raw 재구축
+  build_phase: 1
+
+models:
+  makestar_dbt:
+    +materialized: view
+
+    # staging : 소스 1:1 청소. 조인 금지. view.
+    staging:
+      +group: commerce
+      +schema: stg
+      +materialized: view
+      +access: protected
+      +tags: ['staging']
+
+    # intermediate : 조인/집계. ephemeral 이라 물리 객체가 없다.
+    #                access: private = 같은 group(commerce) 안에서만 ref 가능.
+    intermediate:
+      +group: commerce
+      +schema: int
+      +materialized: ephemeral
+      +access: private
+      +tags: ['intermediate']
+
+    # marts : 사람과 BI 가 보는 유일한 층.
+    marts:
+      +group: commerce
+      +schema: marts
+      +materialized: table
+      +access: public
+      +tags: ['marts']
+      shared:
+        +group: shared
+        +schema: shared
+
+tests:
+  makestar_dbt:
+    +group: commerce

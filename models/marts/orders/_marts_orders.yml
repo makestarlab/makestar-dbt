@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "datamart.total_orders | grain: 주문 × 옵션 1건"
+    columns:
+      - name: order_no
+        data_tests: [not_null]
+      - name: service_code
+        data_tests: [not_null]
+      - name: user_sk
+        data_tests: [not_null]
+  - name: bridge_order_event
+    description: "pre_commerce_orders 의 string_agg(event_id, ', ') | grain: 주문 × 옵션 × event_id"

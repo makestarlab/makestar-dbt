@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_production__projects
+    description: "production.project | grain: 원천과 동일"
+  - name: stg_production__exchange_history
+    description: "production.country_exchange_history | grain: 원천과 동일"
+  - name: stg_production__country_codes
+    description: "production.SPM_COUNTRY_CODE | grain: 원천과 동일"

@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_manual__offline_orders
+    description: "pre_total_orders 의 offline CTE (9개 매장 UNION) | grain: 매장 × 주문일 × 상품"
+  - name: stg_manual__extra_orders
+    description: "event_extra_orders_ / pocaalbum_orders_ / album_extra_orders_ / extra_orders_ | grain: 채널 × 주문일 × 상품"
+  - name: stg_manual__biz_mapper_objects
+    description: "datamart.order_biz_mapper_objects | grain: 매퍼 규칙 1건"
+    columns:
+      - name: match_key
+        data_tests: [not_null]
+  - name: stg_manual__biz_mapper_users
+    description: "datamart.order_biz_mapper_users | grain: 유저 × 분류 1건"
+  - name: stg_manual__archived_orders
+    description: "datamart.archived_orders | grain: 과거 주문 1건"

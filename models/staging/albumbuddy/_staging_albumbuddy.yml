@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_albumbuddy__orders
+    description: "public.order | grain: 원천과 동일"
+  - name: stg_albumbuddy__package_deliveries
+    description: "public.package_delivery | grain: 원천과 동일"
+  - name: stg_albumbuddy__pob_outbound
+    description: "external.albumbuddy_pob_only | grain: 원천과 동일"

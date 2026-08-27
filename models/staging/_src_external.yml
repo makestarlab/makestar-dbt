@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: external
+    database: makestar-dw
+    schema: external
+    description: "외부 채널 적재 데이터"
+    tables:
+      - name: WEIDIAN_ORDER_HIS
+        description: "웨이디엔 주문"
+      - name: WEIDIAN_ORDER_ITEM_HIS
+        description: "웨이디엔 주문 아이템"
+      - name: WEIDIAN_ITEM
+        description: "웨이디엔 상품"
+      - name: albumbuddy_pob_only
+        description: "앨범버디 POB 아웃바운드"
+      - name: country_exchange_rate_googlefinance
+        description: "구글파이낸스 환율 (대만 fallback)"

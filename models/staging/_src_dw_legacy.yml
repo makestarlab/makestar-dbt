@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: dw_legacy
+    database: makestar-dw
+    schema: datamart
+    description: "기존 파이프라인 산출물. tb_commerce_orders_flattened는 2.5분 주기 별도 MERGE 파이프라인이므로 dbt로 가져오지 않고 소스로 사용"
+    tables:
+      - name: tb_commerce_orders_flattened
+        description: "JSONB flatten 완료 주문 (insert-only MERGE)"
+      - name: commerce_eximbay_code
+        description: "엑심베이 결제 코드"
+      - name: total_orders
+        description: "★ 레거시 최종 마트 — Phase 1 대조 기준"

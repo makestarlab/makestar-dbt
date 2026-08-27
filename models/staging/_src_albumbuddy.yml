@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: albumbuddy
+    database: makestar-dw
+    schema: public
+    description: "앨범버디 서비스 DB"
+    tables:
+      - name: order
+        description: "앨범버디 주문"
+      - name: package_delivery
+        description: "묶음배송"

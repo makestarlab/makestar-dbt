@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_weidian__orders
+    description: "external.WEIDIAN_ORDER_HIS | grain: 원천과 동일"
+  - name: stg_weidian__order_items
+    description: "external.WEIDIAN_ORDER_ITEM_HIS | grain: 원천과 동일"
+  - name: stg_weidian__items
+    description: "external.WEIDIAN_ITEM | grain: 원천과 동일"

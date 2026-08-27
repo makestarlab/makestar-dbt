@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: int_orders_enriched
+    description: "datamart.vw_commerce_orders | grain: 주문 1건"
+  - name: int_order_items_enriched
+    description: "datamart.vw_commerce_order_items | grain: 주문 × 아이템"
+  - name: int_orders_reward
+    description: "pre_commerce_orders 1번 UNION (이벤트/펀딩) | grain: 주문 × 옵션"
+  - name: int_orders_shopping
+    description: "pre_commerce_orders 2번 UNION (쇼핑) | grain: 주문 × 옵션"
+  - name: int_orders_etc
+    description: "pre_commerce_orders 3번 UNION (차액지불) | grain: 주문 × 옵션"
+  - name: int_orders_commerce
+    description: "datamart.pre_commerce_orders | grain: 주문 × 옵션"
+  - name: int_orders_weidian
+    description: "pre_total_orders 의 external CTE | grain: 웨이디엔 주문 × 옵션"
+  - name: int_orders_offline
+    description: "pre_total_orders 의 offline CTE (매장) | grain: 매장 주문"
+  - name: int_orders_albumbuddy
+    description: "pre_total_orders 의 albumbuddy 블록 | grain: 앨범버디 주문"
+  - name: int_orders_manual_etc
+    description: "pre_total_orders 의 etc CTE | grain: 수기 주문"
+  - name: int_orders_unioned
+    description: "pre_total_orders 의 최종 UNION ALL | grain: 전 채널 주문 × 옵션"
+  - name: int_orders_classified
+    description: "pre_total_orders 의 market_type/biz_type/channel_type CASE 트리 | grain: 전 채널 주문 × 옵션 (행 수 불변)"
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+              compare_model: ref('int_orders_unioned')
+  - name: int_orders_overridden
+    description: "pre_total_orders 의 order_biz_mapper 조인 2단 | grain: 전 채널 주문 × 옵션 (행 수 불변이어야 함)"
+    data_tests:
+      # 🔴 이 프로젝트에서 가장 중요한 테스트.
+      #    레거시 OR 조인이 만들던 행 복제를 여기서 잡는다.
+      - dbt_utils.equal_rowcount:
+          arguments:
+              compare_model: ref('int_orders_classified')
+  - name: int_album_unit_allocation
+    description: "order_album_qty = order_qty * sum(sales_qty) 대체 | grain: 주문 × 옵션 × parent_sku"

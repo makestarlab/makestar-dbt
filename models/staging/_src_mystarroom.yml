@@ -1,0 +1,38 @@
+version: 2
+
+sources:
+  - name: mystarroom
+    database: makestar-dw
+    schema: pg_mystarroom_public
+    description: "메이크스타 웹 서비스 운영 DB (Postgres 복제)"
+    tables:
+      - name: tb_commerce_product
+        description: "상품"
+      - name: tb_commerce_product_option
+        description: "상품 옵션"
+      - name: tb_commerce_product_content
+        description: "상품 콘텐츠"
+      - name: tb_commerce_product_event_data
+        description: "이벤트/오퍼 마스터"
+      - name: tb_commerce_product_event_sales_data
+        description: "이벤트 판매 설정 (sales_qty)"
+      - name: tb_commerce_additional_order
+        description: "추가 주문"
+      - name: tb_commerce_exchange_rate
+        description: "환율"
+      - name: tb_artist_artist
+        description: "아티스트"
+      - name: tb_artist_company
+        description: "소속사"
+      - name: tb_common_category
+        description: "공통 카테고리"
+      - name: tb_common_ip_address_info
+        description: "IP 주소 → 국가"
+      - name: tb_auth_user
+        description: "유저"
+      - name: tb_auth_user_group
+        description: "유저 그룹"
+      - name: tb_auth_user_information
+        description: "유저 부가정보"
+      - name: tb_auth_user_user_group
+        description: "유저-그룹 매핑"

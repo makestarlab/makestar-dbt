@@ -1,0 +1,62 @@
+# ─────────────────────────────────────────────────────────────────
+#  모델 이름 일괄 변경
+#
+#  왼쪽은 현재 이름(제가 임의로 붙인 것), 오른쪽에 원하는 이름을 적고
+#      python rename.py
+#  를 실행하면 파일명 · ref() · yml 의 name 이 전부 함께 바뀝니다.
+#
+#  비워두면 그대로 둡니다. 되돌리려면 rename.py --undo
+# ─────────────────────────────────────────────────────────────────
+renames:
+  bridge_order_event: 
+  fct_orders: 
+  int_album_unit_allocation: 
+  int_catalog_event_resolution: 
+  int_catalog_items: 
+  int_catalog_option_sales: 
+  int_exchange_rates_unioned: 
+  int_order_items_enriched: 
+  int_orders_albumbuddy: 
+  int_orders_classified: 
+  int_orders_commerce: 
+  int_orders_enriched: 
+  int_orders_etc: 
+  int_orders_manual_etc: 
+  int_orders_offline: 
+  int_orders_overridden: int_orders_mapped
+  int_orders_reward: 
+  int_orders_shopping: 
+  int_orders_unioned: 
+  int_orders_weidian: 
+  stg_albumbuddy__orders: 
+  stg_albumbuddy__package_deliveries: 
+  stg_albumbuddy__pob_outbound: 
+  stg_manual__archived_orders: 
+  stg_manual__biz_mapper_objects: 
+  stg_manual__biz_mapper_users: 
+  stg_manual__extra_orders: 
+  stg_manual__offline_orders: 
+  stg_mystarroom__additional_orders: 
+  stg_mystarroom__artist_companies: 
+  stg_mystarroom__artists: 
+  stg_mystarroom__categories: 
+  stg_mystarroom__exchange_rates: 
+  stg_mystarroom__order_items: 
+  stg_mystarroom__orders: 
+  stg_mystarroom__product_contents: 
+  stg_mystarroom__product_event_data: 
+  stg_mystarroom__product_event_sales: 
+  stg_mystarroom__product_options: 
+  stg_mystarroom__products: 
+  stg_mystarroom__user_groups: 
+  stg_mystarroom__users: 
+  stg_oms__sku_categories: 
+  stg_oms__skus: 
+  stg_production__country_codes: 
+  stg_production__exchange_history: 
+  stg_production__projects: 
+  stg_weidian__items: 
+  stg_weidian__order_items: 
+  stg_weidian__orders: 
+  time_spine_daily: 
+  time_spine_hourly:

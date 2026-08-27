@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: int_catalog_items
+    description: "datamart.vw_commerce_items_v2 | grain: 상품 × 옵션 × SKU"
+  - name: int_catalog_option_sales
+    description: "datamart.vw_product_option_info | grain: 이벤트 × 옵션"
+  - name: int_catalog_event_resolution
+    description: "pre_commerce_orders 쇼핑 브랜치의 sku_name_component_1 매칭 | grain: 이벤트 × 옵션"
+    data_tests:
+      # ⚠️ SKU명 파싱 휴리스틱. 미매칭이 늘면 시끄럽게 실패해야 한다.
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+              combination_of_columns: [product_event_id, product_option_id]

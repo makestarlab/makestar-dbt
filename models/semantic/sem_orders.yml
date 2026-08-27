@@ -1,0 +1,45 @@
+version: 2
+
+semantic_models:
+  - name: orders
+    description: "주문 매출. 지표 정의의 단일 진실 공급원."
+    model: ref('fct_orders')
+    defaults:
+      agg_time_dimension: pay_date
+
+    entities:
+      - name: order
+        type: primary
+        expr: order_no
+      - name: user
+        type: foreign
+        expr: user_sk
+
+    dimensions:
+      - name: pay_date
+        type: time
+        type_params: {time_granularity: day}
+      - name: market_type
+        type: categorical
+      - name: biz_type
+        type: categorical
+      - name: channel_type
+        type: categorical
+      - name: service_code
+        type: categorical
+
+    measures:
+      - name: total_revenue
+        agg: sum
+        expr: total_revenue
+      - name: product_revenue
+        agg: sum
+      - name: order_count
+        agg: count_distinct
+        expr: order_no
+      - name: buyer_count
+        agg: count_distinct
+        expr: user_sk
+
+      # ⚠️ order_album_qty 는 배분 모델(int_album_unit_allocation)이
+      #    확정되기 전까지 measure 로 노출하지 않는다. 2.69배 과다집계 상태.

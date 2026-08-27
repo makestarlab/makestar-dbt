@@ -1,0 +1,54 @@
+version: 2
+models:
+- name: stg_mystarroom__orders
+  description: 'datamart.tb_commerce_orders_flattened → vw_commerce_orders | grain:
+    주문 1건'
+  columns:
+  - name: order_id
+    data_tests:
+    - not_null
+  - name: order_number
+    data_tests:
+    - not_null
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - order_id
+        - order_number
+- name: stg_mystarroom__order_items
+  description: 'vw_commerce_order_items | grain: 주문 × 아이템'
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - order_id
+        - order_number
+        - product_option_id
+      config:
+        severity: warn
+- name: stg_mystarroom__additional_orders
+  description: 'pg_mystarroom_public.tb_commerce_additional_order | grain: 원천과 동일'
+- name: stg_mystarroom__products
+  description: 'pg_mystarroom_public.tb_commerce_product | grain: 원천과 동일'
+- name: stg_mystarroom__product_options
+  description: 'pg_mystarroom_public.tb_commerce_product_option | grain: 원천과 동일'
+- name: stg_mystarroom__product_contents
+  description: 'pg_mystarroom_public.tb_commerce_product_content | grain: 원천과 동일'
+- name: stg_mystarroom__product_event_data
+  description: 'pg_mystarroom_public.tb_commerce_product_event_data | grain: 원천과 동일'
+- name: stg_mystarroom__product_event_sales
+  description: 'pg_mystarroom_public.tb_commerce_product_event_sales_data | grain:
+    원천과 동일'
+- name: stg_mystarroom__artists
+  description: 'pg_mystarroom_public.tb_artist_artist | grain: 원천과 동일'
+- name: stg_mystarroom__artist_companies
+  description: 'pg_mystarroom_public.tb_artist_company | grain: 원천과 동일'
+- name: stg_mystarroom__categories
+  description: 'pg_mystarroom_public.tb_common_category | grain: 원천과 동일'
+- name: stg_mystarroom__users
+  description: 'pg_mystarroom_public.tb_auth_user | grain: 원천과 동일'
+- name: stg_mystarroom__user_groups
+  description: 'pg_mystarroom_public.tb_auth_user_user_group | grain: 원천과 동일'
+- name: stg_mystarroom__exchange_rates
+  description: 'pg_mystarroom_public.tb_commerce_exchange_rate | grain: 원천과 동일'
