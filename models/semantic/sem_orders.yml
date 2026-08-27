@@ -8,7 +8,7 @@ semantic_models:
       agg_time_dimension: pay_date
 
     entities:
-      - name: order
+      - name: order_key
         type: primary
         expr: order_no
       - name: user

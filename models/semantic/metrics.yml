@@ -27,4 +27,4 @@ metrics:
     label: "B2C 총 거래액"
     type: simple
     type_params: {measure: total_revenue}
-    filter: "{{ Dimension('order__market_type') }} = 'B2C'"
+    filter: "{{ Dimension('order_key__market_type') }} = 'B2C'"
