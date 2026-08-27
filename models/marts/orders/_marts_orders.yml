@@ -5,7 +5,11 @@ models:
     description: "datamart.total_orders | grain: 주문 × 옵션 1건"
     columns:
       - name: order_no
-        data_tests: [not_null]
+        # 오프라인과 수기 입력 매출은 주문번호가 없다. 36,222건.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
       - name: service_code
         data_tests: [not_null]
       - name: user_sk
