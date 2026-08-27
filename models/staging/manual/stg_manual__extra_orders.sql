@@ -9,10 +9,10 @@
 -- 컬럼 스키마가 네 테이블 모두 동일하다는 전제 (아래 검증 쿼리로 확인할 것).
 
 {% set tables = [
-    ('event_extra_orders_', '팬클럽 자체 링크 | 데이터 입력', '리워드',         '리워드'),
-    ('pocaalbum_orders_',   '포카앨범 제작 | 데이터 입력',    '포카앨범 제작',  '포카앨범 제작'),
-    ('album_extra_orders_', '앨범 유통/도매 | 데이터 입력',   '앨범 유통/도매', '앨범 유통/도매'),
-    ('extra_orders_',       'B2C 기타 매출 | 데이터 입력',    'B2C 기타',       'B2C 기타')
+    ('event_extra_orders', '팬클럽 자체 링크 | 데이터 입력', '리워드',         '리워드'),
+    ('pocaalbum_orders',   '포카앨범 제작 | 데이터 입력',    '포카앨범 제작',  '포카앨범 제작'),
+    ('album_extra_orders', '앨범 유통/도매 | 데이터 입력',   '앨범 유통/도매', '앨범 유통/도매'),
+    ('extra_orders',       'B2C 기타 매출 | 데이터 입력',    'B2C 기타',       'B2C 기타')
 ] %}
 
 {% for tbl, data_source, product_type, product_category in tables %}
