@@ -34,9 +34,9 @@ obj_map as (select * from ranked_map where rn = 1),
 by_object as (
     select
         t.*,
-        coalesce(m.market_type_tobe,  t.market_type)  as market_type_ovr,
-        coalesce(m.biz_type_tobe,     t.biz_type)     as biz_type_ovr,
-        coalesce(m.channel_type_tobe, t.channel_type) as channel_type_ovr
+        coalesce(m.market_type,  t.market_type)  as market_type_ovr,
+        coalesce(m.biz_type,     t.biz_type)     as biz_type_ovr,
+        coalesce(m.channel_type, t.channel_type) as channel_type_ovr
     from {{ ref('int_orders_classified') }} t
     left join obj_map m
            on t.product_type     = m.product_type
