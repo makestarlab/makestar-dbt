@@ -37,3 +37,23 @@
 
 `models/staging/_src_*.yml` 의 `- name:` 을 고치고, `source('<이름>', ...)` 호출부를
 같이 바꾸면 됩니다. `rename.py` 는 모델만 다루므로 소스는 수동으로 해주세요.
+
+## 컬럼 순서 규칙
+
+- 원본 테이블의 컬럼 순서를 그대로 유지한다. 원본과 대조하기 쉽다.
+- 메타 컬럼만 맨 뒤로 몬다. 실제 데이터와 시스템 컬럼이 섞이면 읽기 나쁘다.
+
+메타 컬럼으로 보는 것: `updated_at`, `created_at`, `datastream_metadata`,
+`_synced_at` 등 적재 과정에서 붙은 것들.
+
+```sql
+select
+    -- 원본 순서 그대로
+    id,
+    rate_date,
+    usd, jpy, krw,
+
+    -- 메타는 맨 뒤
+    updated_at
+from ...
+```
